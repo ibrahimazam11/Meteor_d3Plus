@@ -51,35 +51,42 @@ class Dashboard extends Component {
         size: "value"
       },
       attributes: [],
-      selectedAttributes: []
+      selectedAttributes: [],
+      showGraph: true,
+      drawGraph: true
     }
   }
 
   componentWillMount() {
-    let arr = []
+    let arr = [], selectedArr = []
     Object.entries(this.state.config.data[0]).forEach(([key, value], index) => {
-      arr.push(key)
+      arr.push({ key: key, checked: true })
+      selectedArr.push(key)
     })
-    this.setState({ attributes: arr })
+    arr = arr.filter((a) => (a.key != "value"))
+    selectedArr = selectedArr.filter((a) => (a != "value"))
+    this.setState({ attributes: arr, selectedAttributes: selectedArr })
   }
 
   drawMap() {
     let data = this.state.config.data,
       groupBy = this.state.config.groupBy;
-    alert()
+
     // eslint-disable-next-line
-    let visualization = d3plus.viz()
+    // this.state.drawGraph ?
+    d3plus.viz()
       .container("#viz")
       .history(false)
       .title(false)
       .messages(false)
       .data(data)
       .type("tree_map")
-      .id(groupBy)
+      .id(this.state.selectedAttributes)
       .size(this.state.config.size)
       .resize(true)
-      .draw();
-    alert("here")
+      .draw()
+    // :null
+
     let w = window;
     window.handleBreadCrumb = function handleBreadCrumb(value, depth, states) {
       if (depth.previous === false && depth.value === 0) {
@@ -99,22 +106,55 @@ class Dashboard extends Component {
     };
   };
 
+  updateGraph(a) {
+    var arr = this.state.attributes, attr = this.state.selectedAttributes
+    for (var i = 0; i <= arr.length - 1; i++) {
+      if (arr[i].key === a.key) {
+        arr[i].checked = !a.checked;
+      }
+    }
+    if (!a.checked) {
+      attr = attr.filter((at) => at != a.key )
+    }
+    else {
+      attr = attr.filter((at) => at != a.key )
+      attr.push(a.key)
+    }
+
+    this.setState({ attributes: arr, selectedAttributes: attr, drawGraph: false }, () => {
+      console.log(this.state.selectedAttributes)
+
+      // d3plus.viz()
+      //   .container('#viz')
+      //   .id(this.state.selectedAttributes)
+      //   .data(this.state.config.data)
+      //   .size(this.state.config.size)
+      //   .draw()
+    })
+
+  }
+
   render() {
     return (
       <div>
         <PrivateHeader title="Dashboard" />
         <div className="page-content">
-          <table>
-            <tbody>
-              <tr><td>{this.state.config.data[0].region}</td></tr>
-              <tr>{this.state.attributes.map((a) => {
-                <label>{a}</label>
-                console.log(a)
-              })}</tr>
-            </tbody>
-          </table>
+          <div className="row">
+            {this.state.attributes.map((a, i) => {
+              return (<div key={i} className="column" >
+                <input type="checkbox" name={i} value={a.key} onClick={() => this.updateGraph(a)} checked={a.checked} /><h6>{a.key}</h6>
+              </div>)
+            })}
+          </div>
+          <h3>
+            {this.state.selectedAttributes.map((s, i) => {
+              return (s + " --> ")
+            })}
+          </h3>
         </div>
-        <div id="viz" onLoad={this.drawMap()}></div>
+        {/* {this.state.showGraph ?  */}
+        <div className="graph" id="viz" onLoad={this.drawMap()}></div>
+        {/* : <p>abc</p>} */}
       </div >
     );
   }
