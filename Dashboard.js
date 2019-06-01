@@ -108,21 +108,21 @@ class Dashboard extends Component {
 
   updateGraph(a) {
     var arr = this.state.attributes, attr = this.state.selectedAttributes
-    // for (var i = 0; i <= arr.length - 1; i++) {
-    //   if (arr[i].key === a.key) {
-    //     arr[i].checked = !a.checked;
-    //   }
-    // }
-    // if (!a.checked) {
-    //   attr = attr.filter((at) => at != a.key)
-    // }
-    // else {
-    //   attr = attr.filter((at) => at != a.key)
-    //   attr.push(a.key)
-    // }
+    for (var i = 0; i <= arr.length - 1; i++) {
+      if (arr[i].key === a.key) {
+        arr[i].checked = !a.checked;
+      }
+    }
+    if (!a.checked) {
+      attr = attr.filter((at) => at != a.key)
+    }
+    else {
+      attr = attr.filter((at) => at != a.key)
+      attr.push(a.key)
+    }
 
     this.setState({ attributes: arr, selectedAttributes: attr, drawGraph: false }, () => {
-      console.log(this.state.drawGraph)
+      console.log(this.state.selectedAttributes)
 
       // d3plus.viz()
       //   .container('#viz')
@@ -152,39 +152,19 @@ class Dashboard extends Component {
             })}
           </h3>
         </div>
-        {this.state.drawGraph ?
-          <div className="graph" id="viz" >
-            {d3plus.viz()
-              .container("#viz")
-              .data([
-                { "value": 100, "name": "alpha", "weight": 80 },
-                { "value": 70, "name": "beta", "weight": 43 },
-                { "value": 40, "name": "gamma", "weight": 64 },
-                { "value": 15, "name": "delta", "weight": 20 },
-                { "value": 5, "name": "epsilon", "weight": 92 },
-                { "value": 1, "name": "zeta", "weight": 35 }
-              ])
-              .type("tree_map")
-              // .id("name")
-              .color("name")
-              .size("value")
-              .id({
-                "value": ["name", "weight"]
-              })
-              .draw()}
-          </div> :
-          d3plus.viz().container("#viz").id("weight").data([
-            { "value": 100, "name": "alpha", "weight": 80 },
-            { "value": 70, "name": "beta", "weight": 43 },
-            { "value": 40, "name": "gamma", "weight": 64 },
-            { "value": 15, "name": "delta", "weight": 20 },
-            { "value": 5, "name": "epsilon", "weight": 92 },
-            { "value": 1, "name": "zeta", "weight": 35 }
-          ])
-            .type("tree_map")
-            // .id("name")
-            .color("name")
-            .size("value").draw()}
+        {/* {this.state.showGraph ?  */}
+        <div className="graph" id="viz" >{d3plus.viz()
+          .container("#viz")
+          .history(false)
+          .title(false)
+          .messages(false)
+          .data(this.state.config.data)
+          .type("tree_map")
+          .id(this.state.selectedAttributes)
+          .size(this.state.config.size)
+          .resize(true)
+          .draw()}</div>
+        {/* : <p>abc</p>} */}
       </div >
     );
   }
