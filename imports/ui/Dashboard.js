@@ -7,22 +7,21 @@ class Dashboard extends Component {
 
   constructor(props) {
     super(props);
-    // this.config = props.config;
     this.state = {
-      config: data,
-      attributes: [],
-      selectedAttributes: []
+      config: data,                    // json data for graph
+      attributes: [],                  // array to initially display all attributes with checkboxes
+      selectedAttributes: []          // attributes selected by user are maintained in this array  
     }
   }
 
   componentWillMount() {
     let arr = [], selectedArr = [], result = []
-    // let formatData = JSON.parse(this.state.config.data)
-    for (var i of this.state.config.data)
+
+    for (var i of this.state.config.data)         // converting json data to lean array
       result.push(i);
 
     Object.entries(this.state.config.data[0]).forEach(([key, value], index) => {
-      arr.push({ key: key, checked: false })
+      arr.push({ key: key, checked: false })                                // extracting all the attributes from the dataset and saving in array
       // selectedArr.push(key)
     })
     // arr = arr.filter((a) => (a.key != "value"))
@@ -30,13 +29,12 @@ class Dashboard extends Component {
     this.setState({ attributes: arr, selectedAttributes: selectedArr, config: result })
   }
 
-  drawMap() {
+  drawMap() {                 /********** Draw and Update TreeMap ************/
     let data = this.state.config;
-    console.log(data)
     // eslint-disable-next-line
-    document.getElementById("viz").innerHTML = "";
+    document.getElementById("viz").innerHTML = "";            //clear container before updating graph
     if (this.state.selectedAttributes.length) {
-      let visualization = d3plus.viz()
+      let visualization = d3plus.viz()          // draw graph on the basis of dataset and selected attributes by user
         .container("#viz")
         .history(true)
         .title(false)
@@ -48,41 +46,25 @@ class Dashboard extends Component {
         .resize(true)
         .draw()
     }
-    // $("#viz").html('')
-    // let w = window;
-    // window.handleBreadCrumb = function handleBreadCrumb(value, depth, states) {
-    //   if (depth.previous === false && depth.value === 0) {
-    //     document.getElementsByClassName("breadcrumb").innerHTML = "";
-    //     w.breadcrumb = [];
-    //   } else if (depth.previous < depth.value) {
-    //     if (states && (states.length - 1 === w.breadcrumb.length)) {
-    //       w.breadcrumb.push({ val: value });
-    //     }
-    //   } else if (depth.previous > depth.value) {
-    //     w.breadcrumb.pop();
-    //   }
-    //   var breadcrumbContainer = document.getElementsByClassName("breadcrumb");
-    //   breadcrumbContainer = breadcrumbContainer[0];
-    //   if (w.breadcrumb.length) breadcrumbContainer.style.display = "block";
-    //   else breadcrumbContainer.style.display = "none";
-    // }
   }
 
-  updateGraph(a) {
-    var arr = this.state.attributes, attr = this.state.selectedAttributes
-    for (var i = 0; i <= arr.length - 1; i++) {
-      if (arr[i].key === a.key) {
-        arr[i].checked = !a.checked;
+  updateGraph(data) {     /***** updates user selection of checkboxes and selected attributes array *****/
+    var arr = this.state.attributes, selectedAttr = this.state.selectedAttributes
+    for (var i = 0; i <= arr.length - 1; i++) {         // check / uncheck values selected by user
+      if (arr[i].key === data.key) {
+        arr[i].checked = !data.checked;
       }
     }
-    if (!a.checked) {
-      attr = attr.filter((at) => at != a.key)
+    if (!data.checked) {                          // manage selected attributes array
+      selectedAttr = selectedAttr.filter((at) => at != data.key)
     }
     else {
-      attr = attr.filter((at) => at != a.key)
-      attr.push(a.key)
+      selectedAttr = selectedAttr.filter((at) => at != data.key)
+      selectedAttr.push(data.key)
     }
-    this.setState({ attributes: arr, selectedAttributes: attr, drawGraph: false })
+    this.setState({ attributes: arr, selectedAttributes: selectedAttr }, () => {
+      console.log(this.state.selectedAttributes)
+    })
   }
 
   render() {
@@ -92,7 +74,7 @@ class Dashboard extends Component {
         <div className="top-panel">
           <div className="inner-panel">
             <div className="row">
-              {this.state.attributes.map((a, i) => {
+              {this.state.attributes.map((a, i) => {        // displays all attributes with checkboxes
                 return (<div key={i} className="column" >
                   <h5><input type="checkbox" name={i} value={a.key} onClick={() => this.updateGraph(a)} checked={a.checked} />{" " + a.key}</h5>
                 </div>)
@@ -100,11 +82,11 @@ class Dashboard extends Component {
             </div>
           </div>
         </div>
-        <div />       
+        <div />
         <div className="top-panel">
           <div className="inner-panel-array">
-            <h5 className="array">
-              {this.state.selectedAttributes.map((s, i) => {
+            <h5>
+              {this.state.selectedAttributes.map((s, i) => {      // displays all the selected attributes
                 return (s + " --> ")
               })}
             </h5>
@@ -113,7 +95,7 @@ class Dashboard extends Component {
         <div id="breadcrumb">
           <ul className="breadcrumb"></ul>
         </div>
-        <div className="graph" id="viz" onLoad={this.drawMap()}></div>
+        <div className="graph" id="viz" onLoad={this.drawMap()}></div>    { /* draw graph in container */}
       </div >
     );
   }
