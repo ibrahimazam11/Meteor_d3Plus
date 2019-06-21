@@ -27,20 +27,19 @@ class Dashboard extends Component {
     })
 
     for (var i = 0; i <= arr.length - 1; i++) {     // pre-populating map with some data
-      if (arr[i].key === "companyName" || arr[i].key === "dividendYield" || arr[i].key === "marketcap" || arr[i].key === "avg30Volume") {
+      if (arr[i].key === "dividendYield" || arr[i].key === "marketcap" || arr[i].key === "avg30Volume") {
         arr[i].checked = true;
         selectedArr.push(arr[i].key)
       }
     }
 
-    // selectedArr = selectedArr.filter((a) => (a != "value"))
     this.setState({ attributes: arr, selectedAttributes: selectedArr, config: result })
   }
 
   drawMap() {                 /********** Draw and Update TreeMap ************/
     let data = this.state.config;
-    // eslint-disable-next-line
-    document.getElementById("viz").innerHTML = "" ;            //clear container before updating graph
+    // eslint-disable-next-line 
+    document.getElementById("viz").innerHTML = "";            //clear container before updating graph
     if (this.state.selectedAttributes.length) {
       let visualization = d3plus.viz()          // draw graph on the basis of dataset and selected attributes by user
         .container("#viz")
@@ -82,7 +81,7 @@ class Dashboard extends Component {
         <div className="scrollmenupad">
           <h3>Select values to generate Tree Map</h3>
           <div className="scrollmenu">
-            {this.state.attributes.map((a, i) => {    // displays all attributes with checkboxes
+            {this.state.attributes.map((a, i) => {    // displays all attributes with checkboxes 
               return (
                 <span><input type="checkbox" name={i} value={a.key} onClick={() => this.updateGraph(a)} checked={a.checked}></input>{" "} <span className="text-span">{a.key}</span></span>
               )
@@ -93,7 +92,7 @@ class Dashboard extends Component {
         <div className="top-panel">
           <div className="inner-panel-array">
             <h5 className="array">
-              {this.state.selectedAttributes.map((s, i) => {    // displays all the selected attributes
+              {this.state.selectedAttributes.map((s, i) => {    // displays all the selected attributes 
                 return (s + " --> ")
               })}
             </h5>
@@ -109,6 +108,6 @@ class Dashboard extends Component {
       </div >
     )
   }
-};
+}
 
-export default Dashboard
+export default Dashboard;
