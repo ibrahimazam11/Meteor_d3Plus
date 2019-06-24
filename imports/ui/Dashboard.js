@@ -19,27 +19,28 @@ class Dashboard extends Component {
   componentWillMount() {
     let arr = [], selectedArr = [], result = []
 
-    httpGet.getTreemapData().then(resp => {     // get tree map data from api
+    httpGet.getTreemapData().then(function (resp) {     // get tree map data from api
       console.log(resp.data)
-      this.setState({ config: resp.data})
-    }).catch(e => {console.log(e)})
+      // this.setState({ config: resp.data})
 
-    for (var i of this.state.config.data)         // converting json data to lean array
-      result.push(i);
+      for (var i of this.state.config.data)         // converting json data to lean array
+        result.push(i);
 
-    Object.entries(this.state.config.data[0]).forEach(([key, value], index) => {
-      arr.push({ key: key, checked: false })                                // extracting all the attributes from the dataset and saving in array
-      // selectedArr.push(key)
-    })
+      Object.entries(this.state.config.data[0]).forEach(([key, value], index) => {
+        arr.push({ key: key, checked: false })                                // extracting all the attributes from the dataset and saving in array
+        // selectedArr.push(key)
+      })
 
-    for (var i = 0; i <= arr.length - 1; i++) {     // pre-populating map with some data
-      if (arr[i].key === "dividendYield" || arr[i].key === "marketcap" || arr[i].key === "avg30Volume") {
-        arr[i].checked = true;
-        selectedArr.push(arr[i].key)
+      for (var i = 0; i <= arr.length - 1; i++) {     // pre-populating map with some data
+        if (arr[i].key === "dividendYield" || arr[i].key === "marketcap" || arr[i].key === "avg30Volume") {
+          arr[i].checked = true;
+          selectedArr.push(arr[i].key)
+        }
       }
-    }
 
-    this.setState({ attributes: arr, selectedAttributes: selectedArr, config: result })
+      this.setState({ attributes: arr, selectedAttributes: selectedArr, config: result })
+
+    }).catch(e => { console.log(e) })
   }
 
   drawMap() {                 /********** Draw and Update TreeMap ************/
