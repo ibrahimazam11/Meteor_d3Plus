@@ -20,13 +20,16 @@ class Dashboard extends Component {
     let arr = [], selectedArr = [], result = []
 
     httpGet.getTreemapData().then(function (resp) {     // get tree map data from api
-      console.log(resp.data)
-      // this.setState({ config: resp.data})
 
-      for (var i of this.state.config.data)         // converting json data to lean array
-        result.push(i);
+      let data = []
+      if (typeof resp.data === 'object') {          // checking type of data and converting into array if needed
+        data.push(resp.data)
+      }
+      else {
+        data = resp.data
+      }
 
-      Object.entries(this.state.config.data[0]).forEach(([key, value], index) => {
+      Object.entries(data[0]).forEach(([key, value], index) => {
         arr.push({ key: key, checked: false })                                // extracting all the attributes from the dataset and saving in array
         // selectedArr.push(key)
       })
@@ -38,9 +41,9 @@ class Dashboard extends Component {
         }
       }
 
-      this.setState({ attributes: arr, selectedAttributes: selectedArr, config: result })
+      this.setState({ attributes: arr, selectedAttributes: selectedArr, config: data })
 
-    }).catch(e => { console.log(e) })
+    }.bind(this)).catch(e => { console.log(e) })
   }
 
   drawMap() {                 /********** Draw and Update TreeMap ************/
