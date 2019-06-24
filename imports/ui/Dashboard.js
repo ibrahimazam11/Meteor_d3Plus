@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import PrivateHeader from './PrivateHeader';
 import data from '../data/data.json'
+import { httpGet } from '../api/treemapData'
 
 class Dashboard extends Component {
 
@@ -17,6 +18,11 @@ class Dashboard extends Component {
 
   componentWillMount() {
     let arr = [], selectedArr = [], result = []
+
+    httpGet.getTreemapData().then(resp => {     // get tree map data from api
+      console.log(resp.data)
+      this.setState({ config: resp.data})
+    }).catch(e => {console.log(e)})
 
     for (var i of this.state.config.data)         // converting json data to lean array
       result.push(i);
