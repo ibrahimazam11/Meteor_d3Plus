@@ -9,15 +9,14 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      config: data,                    // json data for graph
+      config: [],                    // json data for graph
       attributes: [],                  // array to initially display all attributes with checkboxes
       selectedAttributes: [],          // attributes selected by user are maintained in this array  
-      check: false
     }
   }
 
   componentWillMount() {
-    let arr = [], selectedArr = [], result = []
+    let arr = [], selectedArr = [];
 
     httpGet.getTreemapData().then(function (resp) {     // get tree map data from api
 
@@ -30,7 +29,7 @@ class Dashboard extends Component {
       }
 
       Object.entries(data[0]).forEach(([key, value], index) => {
-        arr.push({ key: key, checked: false })                                // extracting all the attributes from the dataset and saving in array
+        arr.push({ key: key, checked: false })               // extracting all the attributes from the dataset and saving in array
         // selectedArr.push(key)
       })
 
@@ -41,7 +40,7 @@ class Dashboard extends Component {
         }
       }
 
-      this.setState({ attributes: arr, selectedAttributes: selectedArr, config: data })
+      this.setState({ attributes: arr, selectedAttributes: selectedArr, config: data })   // setting state with data and pre-populated attributes to draw graph on button click
 
     }.bind(this)).catch(e => { console.log(e) })
   }
@@ -56,9 +55,9 @@ class Dashboard extends Component {
         .history(true)
         .title(false)
         .messages(false)
-        .data(data)
+        .data(data)                             // data from api
         .type("tree_map")
-        .id(this.state.selectedAttributes)
+        .id(this.state.selectedAttributes)      // selected/checked attributes
         .size("beta")
         .resize(true)
         .draw()
@@ -79,7 +78,7 @@ class Dashboard extends Component {
       selectedAttr = selectedAttr.filter((at) => at != data.key)
       selectedAttr.push(data.key)
     }
-    this.setState({ attributes: arr, selectedAttributes: selectedAttr }, () => {
+    this.setState({ attributes: arr, selectedAttributes: selectedAttr }, () => {    // setting state with updated selected attributes to re-render the graph on button click
       console.log(this.state.selectedAttributes)
     })
   }
@@ -88,7 +87,7 @@ class Dashboard extends Component {
     return (
       <div>
         <PrivateHeader title="Dashboard" />
-        <div className="scrollmenupad">
+        <div className="scrollmenupad">       { /* horizontal scroll container in which all the attributes are displayed */}
           <h3>Select values to generate Tree Map</h3>
           <div className="scrollmenu">
             {this.state.attributes.map((a, i) => {    // displays all attributes with checkboxes 
