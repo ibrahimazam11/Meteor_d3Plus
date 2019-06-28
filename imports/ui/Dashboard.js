@@ -56,7 +56,7 @@ class Dashboard extends Component {
         .title(false)
         .messages(false)
         .data(data)                             // data from api
-        .type("tree_map")
+        .type("tree_map")                       // type of d3plus graph to display i.e. treemap
         .id(this.state.selectedAttributes)      // selected/checked attributes
         .size("beta")
         .resize(true)
@@ -87,9 +87,9 @@ class Dashboard extends Component {
     return (
       <div>
         <PrivateHeader title="Dashboard" />
-        <div className="scrollmenupad">       { /* horizontal scroll container in which all the attributes are displayed */}
+        <div className="scrollmenupad">      {/*top container for selecting attributes */}
           <h3>Select values to generate Tree Map</h3>
-          <div className="scrollmenu">
+          <div className="scrollmenu">      { /* horizontal scroll container in which all the attributes are displayed */}
             {this.state.attributes.map((a, i) => {    // displays all attributes with checkboxes 
               return (
                 <span><input type="checkbox" name={i} value={a.key} onClick={() => this.updateGraph(a)} checked={a.checked}></input>{" "} <span className="text-span">{a.key}</span></span>
@@ -109,9 +109,6 @@ class Dashboard extends Component {
         </div>
         <div className="button-container">
           <button className="button" onClick={() => this.drawMap()}>draw map</button>   { /* button to draw graph */}
-        </div>
-        <div id="breadcrumb">
-          <ul className="breadcrumb"></ul>
         </div>
         <div className="graph" id="viz"></div>    { /* draws graph in this container */}
       </div >
