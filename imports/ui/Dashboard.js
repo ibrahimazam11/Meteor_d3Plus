@@ -78,9 +78,7 @@ class Dashboard extends Component {
       selectedAttr = selectedAttr.filter((at) => at != data.key)
       selectedAttr.push(data.key)
     }
-    this.setState({ attributes: arr, selectedAttributes: selectedAttr }, () => {    // setting state with updated selected attributes to re-render the graph on button click
-      console.log(this.state.selectedAttributes)
-    })
+    this.setState({ attributes: arr, selectedAttributes: selectedAttr })    // setting state with updated selected attributes to re-render the graph on button click
   }
 
   render() {
@@ -92,7 +90,7 @@ class Dashboard extends Component {
           <div className="scrollmenu">      { /* horizontal scroll container in which all the attributes are displayed */}
             {this.state.attributes.map((a, i) => {    // displays all attributes with checkboxes 
               return (
-                <span><input type="checkbox" name={i} value={a.key} onClick={() => this.updateGraph(a)} checked={a.checked}></input>{" "} <span className="text-span">{a.key}</span></span>
+                <span key={i}><input type="checkbox" key={i + 'c'} name={i} value={a.key} onClick={() => this.updateGraph(a)} defaultChecked={a.checked}></input>{" "} <span key={i + 'k'} className="text-span">{a.key}</span></span>
               )
             })}
           </div>
@@ -101,8 +99,8 @@ class Dashboard extends Component {
         <div className="top-panel">
           <div className="inner-panel-array">
             <h5 className="array">
-              {this.state.selectedAttributes.map((s, i) => {    // displays all the selected attributes 
-                return (s + " --> ")
+              {this.state.selectedAttributes.map((s, i) => {   // displays all the selected attributes 
+                return <span key={i}>{s}  --> </span>
               })}
             </h5>
           </div>
