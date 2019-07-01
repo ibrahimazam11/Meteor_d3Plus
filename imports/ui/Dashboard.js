@@ -29,7 +29,8 @@ class Dashboard extends Component {
       }
 
       Object.entries(data[0]).forEach(([key, value], index) => {
-        arr.push({ key: key, checked: false })               // extracting all the attributes from the dataset and saving in array
+        if (value)
+          arr.push({ key: key, checked: false })               // extracting all the attributes from the dataset and saving in array
         // selectedArr.push(key)
       })
 
