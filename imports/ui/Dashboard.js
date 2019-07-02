@@ -28,10 +28,21 @@ class Dashboard extends Component {
         data = resp.data
       }
 
+      for (let obj of data) {     // setting null values to 0 and null strings to ""
+        for (let member in obj) {   // iterating on all the objects of array
+          if (obj[member] == null) {
+            if (member == "nextEarningsDate" || member == "exDividendDate" || member == "companyName" || member == "nextDividendDate") {
+              obj[member] = ""          //setting null string values to empty string ("")
+            }
+            else {
+              obj[member] = 0           // setting null values to 0
+            }
+          }
+        }
+      }
+
       Object.entries(data[0]).forEach(([key, value], index) => {
-        if (value)
           arr.push({ key: key, checked: false })               // extracting all the attributes from the dataset and saving in array
-        // selectedArr.push(key)
       })
 
       for (var i = 0; i <= arr.length - 1; i++) {     // pre-populating map with some data
